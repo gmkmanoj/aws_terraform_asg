@@ -33,13 +33,17 @@ download https://github.com/gmkmanoj/aws_terraform_asg/archive/master.zip and ex
 
 cd aws_terraform_asg
 
-Update AWS secret and access key in variable.tf file and also update other details based on your requirement
+Generate SSH keys
+
+terraform_asg]# ssh-keygen -f gogokey
+
+Update AWS secret, access key, ssh public_key and private_key in variable.tf file and also update other details based on your requirement
   Here i used t2.micro tier, as-south-1 and default security group, default VPC and subnets.
   Make sure your security group allowed All source traffic to access port 80.
 
 Update server_name in nginx_conf.sh file with you domain url.
   The ELB public DNS url only return default index.html. The node js service configured in virutal host so the correct DNS url only return the response from node js.
-  
+
 Now time to bring up the infra and service using terraform
 
 terraform_asg]# terraform --version            # to Verify the terraform version
