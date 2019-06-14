@@ -1,14 +1,17 @@
+# Provider details
 provider "aws" {
   region        = "${var.region}"
   access_key    ="${var.access_key}"
   secret_key    ="${var.secret_key}"
 }
 
+# Push your public key to key pair
 resource "aws_key_pair" "gogoec2" {
   key_name      = "gogoec2"
   public_key    = "${file(var.public_key)}"
 }
 
+# Create EC2 instance
 resource "aws_instance" "gogoec2" {
   connection {
     user        = "${var.aws_default_user}"
@@ -22,7 +25,7 @@ resource "aws_instance" "gogoec2" {
     Name        = "gogoBase"
     ENV         = "${var.environment_tag}"
   }
-
+  # Execute the commands into newly created EC2 instance
   provisioner "remote-exec" {
     inline = [
       "sudo yum -y install epel-release",
@@ -50,6 +53,7 @@ resource "aws_instance" "gogoec2" {
   }
 }
 
+# Create AMI from newly created EC2 instance
 resource "aws_ami_from_instance" "gogouiami" {
   name               = "gogouiami"
   source_instance_id = "${aws_instance.gogoec2.id}"
@@ -58,6 +62,7 @@ resource "aws_ami_from_instance" "gogouiami" {
   }
 }
 
+# Create Launch Tempate for ASG
 resource "aws_launch_template" "gogolt" {
   name_prefix   = "gogolt"
   image_id      = "${aws_ami_from_instance.gogouiami.id}"
@@ -69,11 +74,13 @@ resource "aws_launch_template" "gogolt" {
   }
 }
 
+# Create placement group
 resource "aws_placement_group" "gogoplacement" {
   name          = "gogoplacement"
   strategy      = "spread"
 }
 
+# Create ASG
 resource "aws_autoscaling_group" "gogoasg" {
   name                      = "gogo-ASG"
   max_size                  = 2
@@ -90,6 +97,7 @@ resource "aws_autoscaling_group" "gogoasg" {
   }
 }
 
+# Create Loadbalancer target group
 resource "aws_lb_target_group" "gogotargetgroup" {
   name          = "gogotargetgroup"
   port          = "80"
@@ -110,12 +118,14 @@ resource "aws_lb_target_group" "gogotargetgroup" {
   }
 }
 
+# Get default VPC
 resource "aws_default_vpc" "default" {
   tags  {
     Name        = "Default VPC"
   }
 }
 
+# Get subnet zone1
 resource "aws_default_subnet" "defaultsubnet1" {
   availability_zone = "${var.availability_zone1}"
   tags  {
@@ -123,6 +133,7 @@ resource "aws_default_subnet" "defaultsubnet1" {
   }
 }
 
+# Get subnet zone2
 resource "aws_default_subnet" "defaultsubnet2" {
   availability_zone = "${var.availability_zone2}"
   tags  {
@@ -130,6 +141,7 @@ resource "aws_default_subnet" "defaultsubnet2" {
   }
 }
 
+# Create ELB - Application loadbalancer
 resource "aws_lb" "gogoelb" {
   name               = "gogoelb"
   subnets            = ["${aws_default_subnet.defaultsubnet1.id}","${aws_default_subnet.defaultsubnet2.id}"]
@@ -143,6 +155,7 @@ resource "aws_lb" "gogoelb" {
   }
 }
 
+# Create Application LB listener
 resource "aws_lb_listener" "gogolistener" {
   load_balancer_arn = "${aws_lb.gogoelb.arn}"
   port              = "80"
@@ -154,6 +167,7 @@ resource "aws_lb_listener" "gogolistener" {
   }
 }
 
+# Terminate instance after creating AMI
 resource "null_resource" "postexecution" {
   depends_on    = ["aws_ami_from_instance.gogouiami"]
   connection {
