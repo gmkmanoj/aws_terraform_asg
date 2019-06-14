@@ -21,7 +21,7 @@ cat <<EOM > /etc/nginx/conf.d/gogoui.conf
 server {
     listen 80;
 
-    server_name dev.gogoair.com;
+    server_name dev.lynxadmin.com;
 
     location / {
         proxy_pass http://localhost:8000;
