@@ -11,11 +11,11 @@ These instructions will get you to run terraform code to get the Web service whi
 
 You must have internet connection and administrator privileges to install the below softwares
 
-OS : Any Linux (Here i used centos 6.10)
-Git : Any version to get this repository from github or you can download zip package
-Terraform : v0.11.5
-  Provisioner : Shell script - used to get node js code and setup supervisord. We can use ansible and other provisioner tools.              
-AWS Access and Secret keys - it must have EC2 fullAccess
+OS : Any Linux (Here i used centos 6.10)<br>
+Git : Any version to get this repository from github or you can download zip package<br>
+Terraform : v0.11.5 (https://learn.hashicorp.com/terraform/getting-started/install.html)<br>
+  Provisioner : Shell script - used to get node js code and setup supervisord. We can use ansible and other provisioner tools.<br>           
+AWS Access and Secret keys - it must have EC2 fullAccess<br>
 
 <h4>Execution:</h4>
 
