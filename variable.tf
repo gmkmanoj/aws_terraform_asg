@@ -1,8 +1,8 @@
 variable "access_key" {
-default = "AKIATEAHT76NUXXXX"
+default = "AKIATEAHT76NXXXXXX"
 }
 variable "secret_key" {
-default = "mLtNFHvhQ8H5Clqd78wwh4jc7YgAPGXXXXX"
+default = "WXCX3EYMQJQEE0TCqjXXXXXXXXXXXXX"
 }
 
 variable "aws_default_user" {
@@ -11,6 +11,10 @@ variable "aws_default_user" {
 
 variable "region" {
   default = "ap-south-1"
+}
+
+variable "amiid" {
+  default = "ami-0eacc5b7915ba9921"
 }
 
 variable "instancetype" {
@@ -31,6 +35,10 @@ variable "availability_zone1" {
 
 variable "availability_zone2" {
   default = "ap-south-1b"
+}
+
+variable "emails" {
+  default = "gmkmanoj@gmail.com"
 }
 
 variable "environment_tag" {
