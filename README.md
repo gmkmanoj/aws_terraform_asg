@@ -55,9 +55,9 @@ terraform_asg]# terraform plan                 # Verify the terraform execution 
 terraform_asg]# terraform apply                # setup to environment and services
 
 At the end of the above command execution we will get ELB public DNS url like 
-http://ec2-13-233-46-87.ap-south-1.compute.amazonaws.com/ - the public IP 13.233.46.87
+gogoelb-1364375837.ap-south-1.elb.amazonaws.com 
 
-Create CNAME with above DNS url or add Host record in DNS 13.233.46.87 A dev.yourdomain.com and verify the "Hello world" page.
+Create CNAME with above DNS url or add Host record in DNS with elb dns name IP and your domain www.yourdomain.com and verify the "Hello world" page.
 
 terraform_asg]# terraform show                
 
