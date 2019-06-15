@@ -13,7 +13,7 @@ You must have internet connection and administrator privileges to install the be
 
 OS : Any Linux (Here i used centos 6.10)<br>
 Git : Any version to get this repository from github or you can download zip package<br>
-Terraform : v0.11.5 (https://learn.hashicorp.com/terraform/getting-started/install.html)<br>
+Terraform : v0.11.5 (https://releases.hashicorp.com/terraform/0.11.5/terraform_0.11.5_linux_amd64.zip - https://learn.hashicorp.com/terraform/getting-started/install.html)<br>
   Provisioner : Shell script - used to get node js code and setup supervisord. We can use ansible and other provisioner tools.<br>           
 AWS Access and Secret keys - it must have EC2 fullAccess<br>
 
