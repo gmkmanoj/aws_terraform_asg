@@ -83,9 +83,9 @@ resource "aws_placement_group" "gogoplacement" {
 # Create ASG
 resource "aws_autoscaling_group" "gogoasg" {
   name                      = "gogo-ASG"
-  max_size                  = 2
+  max_size                  = 1
   min_size                  = 1
-  health_check_grace_period = 300
+  health_check_grace_period = 60
   health_check_type         = "ELB"
   placement_group           = "${aws_placement_group.gogoplacement.id}"
   availability_zones        = ["${aws_instance.gogoec2.availability_zone}"]
