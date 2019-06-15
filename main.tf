@@ -17,7 +17,7 @@ resource "aws_instance" "gogoec2" {
     user        = "${var.aws_default_user}"
     private_key = "${file(var.private_key)}"
   }
-  ami           = "ami-0eacc5b7915ba9921"
+  ami           = "${var.amiid}"
   instance_type = "${var.instancetype}"
   key_name      = "gogoec2"
   instance_initiated_shutdown_behavior = "terminate"
@@ -171,6 +171,7 @@ resource "aws_lb_listener" "gogolistener" {
 resource "null_resource" "postexecution" {
   depends_on    = ["aws_ami_from_instance.gogouiami"]
   connection {
+
     host        = "${aws_instance.gogoec2.public_ip}"
     user        = "${var.aws_default_user}"
     private_key = "${file(var.private_key)}"
@@ -179,5 +180,30 @@ resource "null_resource" "postexecution" {
     inline = [
       "sudo init 0"
     ]
+  }
+}
+
+# SNS notification if EC2 cpu usage more than 80%
+resource "aws_sns_topic" "gogotopic" {
+  name = "alarms-topic"
+  provisioner "local-exec" {
+    command = "export AWS_ACCESS_KEY_ID=${var.access_key} ; export AWS_SECRET_ACCESS_KEY=${var.secret_key}; aws sns subscribe --topic-arn ${aws_sns_topic.gogotopic.arn} --protocol email --notification-endpoint ${var.emails} --region ${var.region}"
+  }
+}
+
+# Cloudwatch Alarm if EC2 instance CPU usage reached 80 %
+resource "aws_cloudwatch_metric_alarm" "gogohealth" {
+  alarm_name            = "ASG_Instance_CPU"
+  depends_on            = ["aws_sns_topic.gogotopic", "aws_autoscaling_group.gogoasg"]
+  comparison_operator   = "GreaterThanOrEqualToThreshold"
+  evaluation_periods    = "2"
+  metric_name           = "CPUUtilization"
+  namespace             = "AWS/EC2"
+  period                = "120"
+  statistic             = "Average"
+  threshold             = "80"
+  alarm_actions         = ["${aws_sns_topic.gogotopic.arn}"]
+  dimensions = {
+    "AutoScalingGroupName" = "${aws_autoscaling_group.gogoasg.name}"
   }
 }
